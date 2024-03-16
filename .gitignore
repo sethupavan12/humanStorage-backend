@@ -1,5 +1,5 @@
 *.txt
 __pycache__/
 data/
-venn/
+virtenv/
 backend/.env

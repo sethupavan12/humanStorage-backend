@@ -29,7 +29,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain_community.embeddings.sentence_transformer import (
     SentenceTransformerEmbeddings,
 )
-
+from langchain import hub
 PERSISTENT_DIR="./data"
 # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 # Chroma(persist_directory=PERSISTENT_DIR, embedding_function=embedding_function)
@@ -86,9 +86,10 @@ class AI:
         """
         Gets the answer to the given question.
         """
-        
+        rag_prompt_llama = hub.pull("rlm/rag-prompt-llama")
         chain = RetrievalQA.from_chain_type(llm=self.llm,
                                     chain_type="stuff",
+                                    chain_type_kwargs={"prompt": rag_prompt_llama},
                                     retriever=db)
         response = chain(question)
         return response
