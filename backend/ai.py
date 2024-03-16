@@ -63,12 +63,12 @@ class AI:
         """
         Checks if the given collection exists.
         """
-        if vectordb._collection.count() > 0:
+        if vector_db._collection.count() > 0:
             return True
         return False
     
     def create_collection_and_put_it_in_db(self,list_of_paths, collection_name):
-        docs = load_documents_from_unstrctured_data(list_of_paths)
+        docs = self.load_documents_from_unstrctured_data(list_of_paths)
 
         vectordb = Chroma.from_documents(docs, embedding=self.embeddings, persist_directory = PERSISTENT_DIR, collection_name=collection_name)
         vectordb.persist()

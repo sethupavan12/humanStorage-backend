@@ -1,6 +1,6 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3') #this is how u fix weird sqlite3 issue
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3') #this is how u fix weird sqlite3 issue
 from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
 import chromadb
@@ -33,7 +33,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/ask", methods=["POST"])
-def ask():
+def ask(vector_db=None):
     """
     Populates the collection with the given file path.
 
@@ -46,7 +46,8 @@ def ask():
 
     # DB STUFF
     # check if the collection exists
-    collection_exists = ai.check_if_collection_exists(vector_db, collection_name)
+    # collection_exists = ai.check_if_collection_exists(vector_db, collection_name)
+    collection_exists = False
     if not collection_exists: 
         # create the collection and put it in the database
         new_vector_db = ai.create_collection_and_put_it_in_db(list_of_paths, collection_name)
@@ -61,20 +62,8 @@ def ask():
     
     return jsonify({"answer": answer})
 
-
-@app.route("/add_live", methods=["POST"])
-def live():
-    data = request.json
-    audio_text = data["text"]
-    first_time = data["first_time"]
-    if first_time:
-        video_path = agent.get_video_path(audio_text, first_time=True)
-    else:
-        video_path = agent.get_video_path(audio_text)
-    return jsonify({"video_path": video_path})
-
 if __name__ == '__main__':
     # app.run(port=8000, debug=True)
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=1000, debug=True)
 
     
