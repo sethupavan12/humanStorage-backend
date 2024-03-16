@@ -1,8 +1,12 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3') #this is how u fix weird sqlite3 issue
 from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
+import chromadb
 from ai import AI
-from langchain_community import Chroma
-
+# from langchain_community import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings.sentence_transformer import (
     SentenceTransformerEmbeddings,
 )
@@ -14,8 +18,8 @@ app = Flask(__name__)
 CORS(app, origins="*")
 
 # add client = chromadb.Client() to app.config so that it can be accessed by the routes
-client_object = chromadb.PersistentClient()
-app.config["client"] = client_object
+# client_object = chromadb.PersistentClient()
+# app.config["client"] = client_object
 
 
 ai = AI()
@@ -29,7 +33,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/ask", methods=["POST"])
-def ai():
+def ask():
     """
     Populates the collection with the given file path.
 

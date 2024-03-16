@@ -22,7 +22,8 @@ import sqlite3
 import chromadb
 
 from langchain_community.document_loaders import UnstructuredFileLoader
-from langchain_community import Chroma
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
 # from langchain.vectorstores.chroma import Chroma
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
@@ -40,17 +41,17 @@ class AI:
     """
 
     def __init__(self,openai=True):
-        self.client = app.config["client"]
+        # self.client = app.config["client"]
         # self.client = chromadb.HttpClient(host='localhost', port='8080')
 
-        if self.openai:
+        if openai:
             self.llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.8)
             self.embeddings = OpenAIEmbeddings()
         else:
             self.llm=None
             self.embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
-    def load_documents_from_unstrctured_data(self, list_of_paths: List[str]):
+    def load_documents_from_unstrctured_data(self, list_of_paths):
         """
         Loads the documents from the unstructured data.
         """
@@ -95,25 +96,6 @@ class AI:
         return response
 
     
-
-
-
-class VectorStore:
-    """
-    Takes the list of strings and converts it into a vector.
-    """
-
-    def __init__(self):
-        self.client = chromadb.Client()
-
-
-    def vectorize(self, text):
-        """
-        Vectorizes the given text.
-        """
-        
-
-
     
 
 
