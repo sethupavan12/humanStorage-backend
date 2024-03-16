@@ -31,6 +31,8 @@ from langchain_community.embeddings.sentence_transformer import (
     SentenceTransformerEmbeddings,
 )
 from langchain import hub
+from langchain.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
+from langchain.text_splitter import CharacterTextSplitter
 PERSISTENT_DIR="./data"
 # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 # Chroma(persist_directory=PERSISTENT_DIR, embedding_function=embedding_function)
@@ -55,8 +57,19 @@ class AI:
         """
         Loads the documents from the unstructured data.
         """
-        loader = UnstructuredFileLoader(list_of_paths)
-        self.docs = loader.load_and_split()
+        documents = []
+        for file in list_of_paths:
+            if file.endswith('.pdf'):
+                loader = PyPDFLoader(file)
+                documents.extend(loader.load())
+            elif file.endswith('.txt'):
+                loader = TextLoader(file)
+                documents.extend(loader.load())
+            else:
+                raise Exception(f"Invalid file type - {file}")
+        splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=10)
+        self.docs = splitter.split_documents(documents)
+        # self.docs = loader.load_and_split()
         return self.docs
     
     def check_if_collection_exists(self, vector_db,collection_name):
@@ -69,7 +82,6 @@ class AI:
     
     def create_collection_and_put_it_in_db(self,list_of_paths, collection_name):
         docs = self.load_documents_from_unstrctured_data(list_of_paths)
-
         vectordb = Chroma.from_documents(docs, embedding=self.embeddings, persist_directory = PERSISTENT_DIR, collection_name=collection_name)
         vectordb.persist()
         return vectordb
