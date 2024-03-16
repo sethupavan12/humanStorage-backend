@@ -49,11 +49,11 @@ def ask():
     collection_exists = ai.check_if_collection_exists(vector_db, collection_name)
     if not collection_exists: 
         # create the collection and put it in the database
-        vector_db = ai.create_collection_and_put_it_in_db(list_of_paths, collection_name)
+        new_vector_db = ai.create_collection_and_put_it_in_db(list_of_paths, collection_name)
     else:
         # load the collection from the database
-        vector_db = ai.load_collection_from_db(collection_name)
-
+        new_vector_db = ai.load_collection_from_db(collection_name)
+    vector_db = new_vector_db
     # get the retriever for the collection
     retriever = ai.get_retriever_for_given_vectordb(vector_db)
 
