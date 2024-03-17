@@ -33,6 +33,7 @@ from langchain_community.embeddings.sentence_transformer import (
 from langchain import hub
 from langchain.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.llms import Ollama
 PERSISTENT_DIR="./data"
 # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 # Chroma(persist_directory=PERSISTENT_DIR, embedding_function=embedding_function)
@@ -50,7 +51,7 @@ class AI:
             self.llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.8)
             self.embeddings = OpenAIEmbeddings()
         else:
-            self.llm=None
+            self.llm=Ollama(model="llama2")
             self.embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
     def load_documents_from_unstrctured_data(self, list_of_paths):
