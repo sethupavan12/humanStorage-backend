@@ -47,7 +47,6 @@ def ask(vector_db=None):
     # DB STUFF
     # check if the collection exists
     vector_db = Chroma(persist_directory=PERSISTENT_DIR, embedding_function=embeddings, collection_name=collection_name)
-    import pdb; pdb.set_trace()
     collection_exists = ai.check_if_collection_exists(vector_db, collection_name)
     if collection_exists == False: 
         # create the collection and put it in the database
